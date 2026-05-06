@@ -1,0 +1,66 @@
+<div class="container">
+  <header class="page-header">
+    <div>
+      <h1>Validation Rules</h1>
+      <span class="subtitle">{{ rules.length }} rules loaded from Salesforce</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="loadRules()" [disabled]="loading">
+        {{ loading ? 'Loading...' : '🔄 Refresh' }}
+      </button>
+      <button class="btn btn-danger" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <div class="toolbar">
+    <button class="btn btn-success" (click)="enableAll()">✅ Enable All</button>
+    <button class="btn btn-warning" (click)="disableAll()">⛔ Disable All</button>
+    <button class="btn btn-primary" (click)="deploy()" [disabled]="deploying">
+      {{ deploying ? 'Deploying...' : '🚀 Deploy to Salesforce' }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Loading validation rules from your org...</div>
+
+  <div *ngIf="!loading && rules.length === 0" class="state-message">
+    No validation rules found. Make sure you created them in Salesforce.
+  </div>
+
+  <div *ngIf="!loading && rules.length > 0" class="table-wrapper">
+    <table class="rules-table">
+      <thead>
+        <tr>
+          <th>Object</th>
+          <th>Rule API Name</th>
+          <th>Description</th>
+          <th>Error Message</th>
+          <th>Status</th>
+          <th>Toggle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rule of rules" [class.inactive-row]="!rule.active">
+          <td>
+            <span class="badge badge-object">{{ rule.objectName }}</span>
+          </td>
+          <td class="rule-name">{{ rule.validationName }}</td>
+          <td class="text-muted">{{ rule.description || '—' }}</td>
+          <td class="text-muted">{{ rule.errorMessage || '—' }}</td>
+          <td>
+            <span class="badge" [class.badge-active]="rule.active" [class.badge-inactive]="!rule.active">
+              {{ rule.active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" [checked]="rule.active" (change)="toggleRule(rule)">
+              <span class="slider"></span>
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
