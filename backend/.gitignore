@@ -1,8 +1,0 @@
-target/
-*.jar
-*.war
-*.class
-*.log
-.idea/
-*.iml
-.DS_Store
